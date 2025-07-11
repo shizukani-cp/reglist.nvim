@@ -4,9 +4,21 @@
 
 local M = {}
 
+-- Default configuration
+local config = {
+  margin_col = 4,
+  margin_row = 2,
+  win_opts = {
+    style = 'minimal',
+    border = 'single',
+  },
+}
+
 -- @public
-function M.setup()
-  -- No setup needed at the moment.
+-- Merges user config with defaults
+function M.setup(user_config)
+  user_config = user_config or {}
+  config = vim.tbl_deep_extend('force', config, user_config)
 end
 
 -- @public
@@ -32,24 +44,22 @@ function M.open()
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
-  local margin_col = 4
-  local margin_row = 2
-
   local editor_width = vim.api.nvim_get_option('columns')
   local editor_height = vim.api.nvim_get_option('lines')
 
-  local win_width = editor_width - (margin_col * 2)
-  local win_height = editor_height - (margin_row * 2)
+  local win_width = editor_width - (config.margin_col * 2)
+  local win_height = editor_height - (config.margin_row * 2)
 
-  vim.api.nvim_open_win(buf, true, {
+  local win_opts = {
     relative = 'editor',
     width = win_width,
     height = win_height,
-    row = margin_row,
-    col = margin_col,
-    style = 'minimal',
-    border = 'single',
-  })
+    row = config.margin_row,
+    col = config.margin_col,
+  }
+  win_opts = vim.tbl_deep_extend('force', win_opts, config.win_opts)
+
+  local win = vim.api.nvim_open_win(buf, true, win_opts)
 
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<Cmd>close<CR>', { noremap = true, silent = true })
   vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<Cmd>close<CR>', { noremap = true, silent = true })
