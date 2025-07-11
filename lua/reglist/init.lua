@@ -41,6 +41,9 @@ function M.open()
     style = 'minimal',
     border = 'single',
   })
+
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<Cmd>close<CR>', { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<Cmd>close<CR>', { noremap = true, silent = true })
 end
 
 return M
