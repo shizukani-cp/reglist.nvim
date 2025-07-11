@@ -32,12 +32,21 @@ function M.open()
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
+  local margin_col = 4
+  local margin_row = 2
+
+  local editor_width = vim.api.nvim_get_option('columns')
+  local editor_height = vim.api.nvim_get_option('lines')
+
+  local win_width = editor_width - (margin_col * 2)
+  local win_height = editor_height - (margin_row * 2)
+
   vim.api.nvim_open_win(buf, true, {
     relative = 'editor',
-    width = 80,
-    height = 20,
-    row = 10,
-    col = 10,
+    width = win_width,
+    height = win_height,
+    row = margin_row,
+    col = margin_col,
     style = 'minimal',
     border = 'single',
   })
